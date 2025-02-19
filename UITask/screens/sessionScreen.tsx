@@ -1,31 +1,29 @@
-import { View, Text, FlatList, TextInput, ScrollView, StyleSheet } from "react-native";
+import { View, Text, FlatList, TextInput, StyleSheet } from "react-native";
 import { FontAwesome } from "@expo/vector-icons"; // Icon user & máy tính
-
-const chunks = ["Chunk 1", "Chunk 2", "Chunk 3", "Chunk 4", "Chunk 5"];
-const queries = ["Query 1", "Query 2"]; // Danh sách các query
+import { chatData } from "../data/chatData";
 
 export default function SessionScreen() {
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      {queries.map((query, index) => (
-        <View key={index} style={styles.queryBlock}>
-          {/* Thanh Query */}
+    <View style={styles.container}>
+      {/* Danh sách Query */}
+      {chatData.map((chat, index) => (
+        <View key={chat.id} style={styles.section}>
           <View style={styles.queryRow}>
             <FontAwesome name="user-circle" size={32} color="#003366" style={styles.userIcon} />
             <View style={styles.queryContainer}>
-              <TextInput style={styles.input} placeholder={query} />
+              <TextInput style={styles.input} value={chat.query} editable={false} />
             </View>
           </View>
-
+          
           {/* Danh sách Chunk */}
           <View style={styles.chunkContainer}>
             <FlatList
-              data={chunks}
+              data={chat.chunks}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item, index }) => ( // ✅ Sửa i thành index
+              renderItem={({ item, index }) => (
                 <View>
                   <Text style={styles.chunkText}>{item}</Text>
-                  {index < chunks.length - 1 && <View style={styles.separator} />}
+                  {index < chat.chunks.length - 1 && <View style={styles.separator} />}
                 </View>
               )}
             />
@@ -33,47 +31,52 @@ export default function SessionScreen() {
           </View>
         </View>
       ))}
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  scrollContainer: {
-    flexGrow: 1,
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#f0f4f8",
     alignItems: "center",
-    paddingTop: 20,
-    backgroundColor:"#F5E6CA",
+    justifyContent: "flex-start",
   },
-  queryBlock: {
+  section: {
+    marginBottom: 30,
     width: "100%",
     alignItems: "center",
-    marginBottom: 40,
   },
   queryRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     width: 550,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   userIcon: {
-    marginRight: 20,
+    marginRight: 15,
   },
   queryContainer: {
     backgroundColor: "#fff",
-    padding: 10,
+    padding: 12,
     borderRadius: 5,
     flex: 1,
+    borderWidth: 1,
+    borderColor: "#003366",
   },
   input: {
     fontSize: 16,
     textAlign: "center",
+    color: "#003366",
+    fontWeight: "bold",
   },
   chunkContainer: {
     backgroundColor: "#fff",
     borderRadius: 10,
     padding: 10,
-    width: "80%",
+    width: "50%", /* Giảm kích thước khung chứa chunk */
     alignItems: "center",
     borderWidth: 2,
     borderColor: "#003366",
@@ -93,6 +96,7 @@ const styles = StyleSheet.create({
   computerIcon: {
     position: "absolute",
     right: -50,
-    top: 10,
+    top: "50%",
+    transform: [{ translateY: -16 }],
   },
 });
